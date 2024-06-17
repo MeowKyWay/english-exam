@@ -1,0 +1,111 @@
+body {
+    font-family: "IBM Plex Sans Thai", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: #f6f6f4;
+
+}
+
+@media (max-width: 900px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        width: 95%;
+        gap: 8px;
+    }
+    .header {
+        margin-left: 2.5%;
+        color: #6159f7;
+    }
+}
+
+@media (min-width: 900px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        width: 60%;
+        gap: 8px;
+    }
+    .header {
+        margin-left: 20%;
+        color: #6159f7;
+    }
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border-radius: 20px;
+    gap: 30px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.questionContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.choiceContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.choiceLabel {
+    margin-left: 4px;
+}
+
+.button {
+    background-color: #6159f7;
+    display: grid;
+    place-items: center;
+    padding: 13px 26px 13px 26px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+}
+
+.score {
+    background-color: #6159f7;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    height: fit-content;
+    margin-left: 12px;
+    padding: 4px 8px 4px 8px;
+    border-radius: 4px;
+}
+
+.button:hover {
+    background-color: #7f78f7;
+}
+
+.questionScoreLabel {
+    background-color: lightgray;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    height: fit-content;
+    margin-left: 12px;
+    padding: 2px 4px 2px 4px;
+    border-radius: 4px;
+}
