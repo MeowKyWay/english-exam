@@ -14,20 +14,52 @@
 </head>
 
 <body>
-    <div style="display: flex; flex-direction: row; align-items: center;">
-        <h1 class="header">English Test</h1>
-        <div class="score" style="visibility: hidden;" id="score"></div>
+    <div style="display: flex; flex-direction: row; align-items: center; gap: 4px;">
+        <h1 class="header" style="margin-right: 8px;">English Test</h1>
+        <div id="basic" role="button" onclick="activateButton(this)"
+            url="https://testbucket7612675.s3.ap-southeast-1.amazonaws.com/english-test/easy.tsv"
+            class="radio-button active">
+            Basic
+        </div>
+        <div id="intermediate" role="button" onclick="activateButton(this)"
+            url="https://testbucket7612675.s3.ap-southeast-1.amazonaws.com/english-test/medium.tsv"
+            class="radio-button inactive">
+            Intermediate</div>
+        <div id="advanced" role="button" onclick="activateButton(this)"
+            url="https://testbucket7612675.s3.ap-southeast-1.amazonaws.com/english-test/hard.tsv"
+            class="radio-button inactive">
+            Advanced</div>
     </div>
-    
+
     <div style="width: calc(100vw - 23px); display: flex; flex-direction: column; align-items: center;">
         <div class="container">
             <div class="content" id="content"></div>
             <div
                 style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end; width: 100%;">
                 <div id="submit" role="button" class="button">Check answer</div>
+                <div class="score" id="score"></div>
             </div>
         </div>
     </div>
+    <script>
+        function activateButton(button) {
+            if (button.classList.contains('active')) return;
+            // Get all buttons in the button group
+            var buttons = document.getElementsByClassName('radio-button');
+
+            // Remove the 'active' class from all buttons
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+                buttons[i].classList.add('inactive');
+            }
+
+            // Add the 'active' class to the clicked button
+            button.classList.add('active');
+            button.classList.remove('inactive');
+
+            setUpContent(button.getAttribute('url'));
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 

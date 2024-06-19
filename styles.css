@@ -8,9 +8,12 @@ body {
 
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px) { /*If screen width is less than 900px*/
     .container {
         width: 95%;
+    }
+    .divider {
+        display: none;
     }
     .header {
         margin-left: 2.5%;
@@ -18,19 +21,34 @@ body {
     .content {
         display: flex;
         flex-direction: column;
+        gap: 30px;
     }
 }
 
-@media (min-width: 900px) {
+@media (min-width: 900px) { /*If screen width is more than 900px*/
     .container {
         width: 70%;
+    }
+    .divider {
+        position: absolute;
+        width: 0px;
+        height: calc(100% - 40px);
+        border: 0.5px solid;
+        border-color: #bbbbba;
+        box-sizing: border-box;
+        top: 20px;
+        bottom: 20px;
+        left: 50%;
+        right: 50%;
     }
     .header {
         margin-left: 20%;
     }
     .content {
         display: grid;
-        grid-template-columns: auto auto;
+        row-gap: 30px;
+        grid-template-columns: 50% 50%;
+        position: relative;
     }
 }
 
@@ -47,17 +65,18 @@ body {
 .content {
     background-color: #ffffff;
     border-radius: 20px;
-    gap: 30px;
-    padding-left: 40px;
-    padding-right: 40px;
     padding-top: 30px;
     padding-bottom: 30px;
 }
 
 
 .questionContainer {
+    padding-left: 40px;
+    padding-right: 40px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .choiceContainer {
@@ -92,12 +111,12 @@ body {
     justify-content: center;
     align-items: center;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     height: fit-content;
-    margin-left: 12px;
-    padding: 4px 8px 4px 8px;
-    border-radius: 4px;
+    padding: 13px 26px 13px 26px;
+    border-radius: 8px;
+    margin-top: 10px;
 }
 
 .button:hover {
@@ -117,4 +136,26 @@ body {
     margin-left: 12px;
     padding: 2px 4px 2px 4px;
     border-radius: 4px;
+}
+
+.radio-button {
+    background-color: #ffffff;
+    display: grid;
+    place-items: center;
+    padding: 4px 8px 4px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: black;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.inactive:hover {
+    background-color: #e9e9e7;
+}
+
+.active {
+    background-color: #6159f7;
+    color: white;
 }

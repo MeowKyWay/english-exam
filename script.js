@@ -2,43 +2,44 @@ let questions;
 let content;
 let submitButton;
 
-document.addEventListener('DOMContentLoaded', async function () {
-
-    let questions1, questions2, questions3;
-
-    content = document.getElementById('content');
-
-    submitButton = document.getElementById('submit');
-    submitButton.addEventListener('click', checkAnswer);
-
+async function fetchQuestion(url) {
     try {
-        await fetch('https://testbucket7612675.s3.ap-southeast-1.amazonaws.com/english-test/easy.tsv')
+        await fetch(url)
             .then(response => response.text())
             .then(text => {
-                const data1 = text.split('\n').map(row => row.split('\t'));
-                questions1 = formatData(data1);
-            })
-        await fetch('https://testbucket7612675.s3.ap-southeast-1.amazonaws.com/english-test/medium.tsv')
-            .then(response => response.text())
-            .then(text => {
-                const data2 = text.split('\n').map(row => row.split('\t'));
-                questions2 = formatData(data2);
-            })
-        await fetch('https://testbucket7612675.s3.ap-southeast-1.amazonaws.com/english-test/hard.tsv')
-            .then(response => response.text())
-            .then(text => {
-                const data3 = text.split('\n').map(row => row.split('\t'));
-                questions3 = formatData(data3);
+                const data = text.split('\n').map(row => row.split('\t'));
+                questions = formatData(data);
             })
     } catch (error) {
         console.error('error loading csv file');
         return;
     }
 
-    questions = random(questions1, 10).concat(random(questions2, 10)).concat(random(questions3, 10));
+    questions = random(questions, 15);
 
     renderQuestions();
+}
 
+async function setUpContent(url) {
+    content.innerHTML = '';
+
+    const divider = document.createElement('div');
+    divider.classList.add('divider');
+
+    content.appendChild(divider);
+
+    document.getElementById('score').style.display = 'none';
+    submitButton.style.display = 'block';
+    
+    await fetchQuestion(url);
+}
+
+document.addEventListener('DOMContentLoaded', async function () {
+    content = document.getElementById('content');
+    submitButton = document.getElementById('submit');
+    submitButton.addEventListener('click', checkAnswer);
+
+    await setUpContent('https://testbucket7612675.s3.ap-southeast-1.amazonaws.com/english-test/easy.tsv');
 });
 
 function formatData(data) {
@@ -65,41 +66,49 @@ function formatData(data) {
 
 function renderQuestions() {
 
+    let i=0;
+
     questions.forEach((question, index) => {
-        const questionContainer = document.createElement('div');
+        const questionContainer = document.createElement('div'); //create question container
         questionContainer.classList.add('questionContainer');
 
-        const questionLabelContainer = document.createElement('div');
+        const questionLabelContainer = document.createElement('div'); //create question label container
         questionLabelContainer.style.display = 'flex';
         questionLabelContainer.style.flexDirection = 'row';
+        questionLabelContainer.style.gap = '4px';
         questionLabelContainer.setAttribute('id', `question-${index}`);
         questionContainer.appendChild(questionLabelContainer);
 
-        const questionLabel = document.createElement('span');
+        const questionNumber = document.createElement('span'); //create question number
+        questionNumber.innerText = index + 1 + ".  ";
+
+        const questionLabel = document.createElement('span'); //create question label
         questionLabel.setAttribute('id', `question-${index}-label`);
-        questionLabel.innerText = index + 1 + ".  " + question.label;
+        questionLabel.innerText = question.label;
+
+        questionLabelContainer.appendChild(questionNumber);
         questionLabelContainer.appendChild(questionLabel);
 
-        const choices = Object.keys(question.choice);
-        choices.forEach((choice) => {
+        const choices = Object.keys(question.choice); //get all keys of question.choice
+        choices.forEach((choice) => { //render each choice
             if (!question.choice[choice].label) return;
-            const choiceContainer = document.createElement('div');
+            const choiceContainer = document.createElement('div'); //create choice container
             choiceContainer.classList.add('choiceContainer');
             choiceContainer.setAttribute('id', `question-${index}-choice-${choice}`);
-            choiceContainer.addEventListener('click', () => {
+            choiceContainer.addEventListener('click', () => { //click anywhere on the container to select the choice
                 const choiceInput = document.getElementById(`question-${index}-choice-${choice}-input`);
                 choiceInput.click();
             });
             choiceContainer.style.cursor = 'pointer';
             choiceContainer.style.width = 'fit-content';
 
-            const choiceLabel = document.createElement('label');
+            const choiceLabel = document.createElement('label'); //create choice label
             choiceLabel.classList.add('choiceLabel');
             choiceLabel.innerText = question.choice[choice].label;
             choiceLabel.style.cursor = 'pointer';
             choiceLabel.style.marginTop = '2px';
 
-            const choiceInput = document.createElement('input');
+            const choiceInput = document.createElement('input'); //create choice checkbox
             choiceInput.setAttribute('type', 'radio');
             choiceInput.setAttribute('name', `question-${index}`);
             choiceInput.setAttribute('value', question.choice[choice].isCorrect);
@@ -109,9 +118,9 @@ function renderQuestions() {
 
             choiceContainer.appendChild(choiceInput);
             choiceContainer.appendChild(choiceLabel);
-            questionContainer.appendChild(choiceContainer);
+            questionContainer.appendChild(choiceContainer); //append choice to question container
         });
-        content.appendChild(questionContainer);
+        content.appendChild(questionContainer); //append question to content
     });
 }
 
@@ -120,9 +129,8 @@ function checkAnswer() {
     if (!confirm('Are you sure you want to submit and check answer?')) return;
 
     let score = 0;
-    for (let i = 0; i < questions.length; i++) {
 
-        let isCorrect = false;
+    for (let i = 0; i < questions.length; i++) {
 
         const questionContainer = document.getElementById(`question-${i}`);
         const questionLabel = document.getElementById(`question-${i}-label`);
@@ -132,51 +140,19 @@ function checkAnswer() {
 
             const choiceInput = document.getElementById(`question-${i}-choice-${j}-input`);
             const choice = document.getElementById(`question-${i}-choice-${j}`);
-            if (choiceInput.value === 'true') {
-                if (choiceInput.checked) {
-                    choice.style.color = 'green';
-                    isCorrect = true;
-                } else {
-                    choice.style.color = 'green';
-                }
-            }
-            else {
-                if (choiceInput.checked) {
-                    choice.style.color = 'red';
-                    isCorrect = false;
-                }
+            if (choiceInput.value === 'true' && choiceInput.checked) {
+                score++;
             }
             choiceInput.disabled = true;
         }
-
-        const quesionScoreLabel = document.createElement('div');
-        quesionScoreLabel.classList.add('questionScoreLabel');
-
-        if (isCorrect) {
-            questionLabel.style.color = 'green';
-            quesionScoreLabel.innerText = '1/1';
-            score++;
-        } else {
-            questionLabel.style.color = 'red';
-            quesionScoreLabel.innerText = '0/1';
-        }
-        questionContainer.appendChild(quesionScoreLabel);
     }
     const scoreLabel = document.getElementById('score');
     scoreLabel.innerText = `Your score is ${score}/${questions.length}`;
 
-    submitButton.innerText = 'Retry?';
-    submitButton.removeEventListener('click', checkAnswer);
-    submitButton.addEventListener('click', () => {
-        if (!confirm('Are you sure you want to retry?')) return;
-        window.location.reload();
-    });
-    scoreLabel.style.visibility = 'visible';
+    scoreLabel.style.display = 'flex';
+    submitButton.style.display = 'none';
 
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 function random(arr, num) {
