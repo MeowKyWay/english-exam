@@ -64,6 +64,7 @@ function formatData(data) {
 }
 
 function renderQuestions() {
+
     questions.forEach((question, index) => {
         const questionContainer = document.createElement('div');
         questionContainer.classList.add('questionContainer');
